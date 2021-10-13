@@ -149,6 +149,7 @@ export function Register(){
 
           <Button
             title="Enviar"
+            //@ts-ignore
             onPress={handleSubmit(handleRegister)}
           />
         </Form>
