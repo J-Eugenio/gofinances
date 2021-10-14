@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Keyboard,
   Modal,
@@ -8,6 +8,7 @@ import {
 
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useForm } from 'react-hook-form';
 
@@ -50,6 +51,8 @@ export function Register(){
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
 
+  const dataKey = '@gofinances:transactions';
+
   const [category, setCategory] = useState({
     key: 'category',
     name: 'Categoria'
@@ -76,7 +79,7 @@ export function Register(){
   }
 
 
-  function handleRegister(form: FormData) {
+  async function handleRegister(form: FormData) {
 
     if(!transactionType)
       return Alert.alert('Selecione o tipo da transacao')
@@ -91,9 +94,25 @@ export function Register(){
       category: category.key
     }
 
-    console.log(data);
+    try {
+
+      await AsyncStorage.setItem(dataKey, JSON.stringify(data))
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Nao foi possivel salvar')
+    }
 
   }
+
+  useEffect(() => {
+     async function loadData(){
+       const data = await AsyncStorage.getItem(dataKey);
+       console.log("Async: ", JSON.parse(data!));
+
+     }
+
+     loadData();
+  }, [])
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -149,7 +168,6 @@ export function Register(){
 
           <Button
             title="Enviar"
-            //@ts-ignore
             onPress={handleSubmit(handleRegister)}
           />
         </Form>
