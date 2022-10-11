@@ -65,6 +65,7 @@ export function Resume(){
     setIsLoading(true);
     const dataKey = '@gofinances:transactions';
     const response = await AsyncStorage.getItem(dataKey);
+    //await AsyncStorage.removeItem('@gofinances:transactions')
     const responseFormatted = response ? JSON.parse(response) : [];
 
     const expensives: TransactionData[] = responseFormatted
